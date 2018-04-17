@@ -40,6 +40,7 @@ int vc_write_image(char *filename, IVC *image);
 //FUNÇÕES
 int vc_gray_to_binary(IVC *src, IVC *dst, int threshold);
 int vc_binary_dilate(IVC *src, IVC *dst, int kernel);
+int vc_rgb_to_hsv(IVC *srcdst);
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //           INSTITUTO POLITÉCNICO DO CÁVADO E DO AVE

@@ -444,3 +444,91 @@ int vc_binary_dilate(IVC *src, IVC *dst, int kernel)
 
 	return 1;
 }
+//RGB para HSV
+int vc_rgb_to_hsv(IVC *srcdst) {
+	unsigned char *data = (unsigned char *)srcdst->data;
+	int bytesperline = srcdst->width * srcdst->channels;
+	int channels = srcdst->channels;
+	int width = srcdst->width;
+	int height = srcdst->height;
+	long int pos;
+	int x, y;
+	float r, g, b, sat, val, hue;
+	float rgb_max, rgb_min;
+
+	//Verificar erros
+	if ((srcdst->width <= 0) || (srcdst->height <= 0) || (srcdst->data == NULL))
+	{
+		return 0;
+	}
+
+	if (srcdst->channels != 3)
+	{
+		return 0;
+	}
+
+	for (y = 0; y < height; y++)
+	{
+		for (x = 0; x < width; x++)
+		{
+			pos = y * bytesperline + x * channels;
+
+			r = (float)data[pos];
+			g = (float)data[pos + 1];
+			b = (float)data[pos + 2];
+
+			rgb_max = (r > g ? (r > b ? r : b) : (g > b ? g : b));
+			rgb_min = (r < g ? (r < b ? r : b) : (g < b ? g : b));
+
+			val = rgb_max;
+
+
+			if (val == 0.0 || rgb_max == rgb_min)
+			{
+				hue = 0.0;
+				sat = 0.0;
+			}
+			else
+			{
+				sat = (rgb_max - rgb_min) / (val);
+
+				if ((rgb_max == r) && (g >= b))
+				{
+					hue = 60.0f * (g - b) / (rgb_max == rgb_min ? 1 : (rgb_max - rgb_min));
+				}
+				else if ((rgb_max == r) && (b > g))
+				{
+					hue = 360.0f + 60.0f * (g - b) / (rgb_max == rgb_min ? 1 : (rgb_max - rgb_min));
+				}
+				else if (rgb_max == g)
+				{
+					hue = 120 + 60 * (b - r) / (rgb_max == rgb_min ? 1 : (rgb_max - rgb_min));
+				}
+				else
+				{
+					hue = 240.0f + 60.0f * (r - g) / (rgb_max == rgb_min ? 1 : (rgb_max - rgb_min));
+				}
+			}
+
+
+			/*data[pos] = (unsigned char)(hue*255/360);
+			data[pos + 1] = (unsigned char)(sat * 255);
+			data[pos + 2] = (unsigned char)(val);*/
+
+			//Procura a cor e torna-a branca
+			if (hue > 30 && hue < 90 && sat > 0.5 && val > 127)
+			{
+				data[pos] = 255;
+				data[pos + 1] = 255;
+				data[pos + 2] = 255;
+			}
+			else //O resto fica a preto
+			{
+				data[pos] = 0;
+				data[pos + 1] = 0;
+				data[pos + 2] = 0;
+			}
+		}
+	}
+	return 1;
+}
