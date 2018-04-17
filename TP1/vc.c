@@ -515,8 +515,9 @@ int vc_rgb_to_hsv(IVC *srcdst) {
 			data[pos + 1] = (unsigned char)(sat * 255);
 			data[pos + 2] = (unsigned char)(val);*/
 
-			//Procura a cor e torna-a branca
-			if (hue > 30 && hue < 90 && sat > 0.5 && val > 127)
+			//Procura a cor e torna-a branca 
+			//Para os dados brancos
+			if (hue > 30 && hue < 190 && sat > 0.2 && val > 200)
 			{
 				data[pos] = 255;
 				data[pos + 1] = 255;
