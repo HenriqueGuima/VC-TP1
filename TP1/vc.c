@@ -532,3 +532,9 @@ int vc_rgb_to_hsv(IVC *srcdst) {
 	}
 	return 1;
 }
+
+//Função para detetar os dados
+//SE a cor for diferente do fundo (azul) mas se for branco
+//Deteta dados brancos e segmenta
+//Senão
+//O preto e segmenta
